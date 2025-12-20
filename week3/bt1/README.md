@@ -1,16 +1,23 @@
-# bt1
+## Tìm hiểu về Nullable
+# Thế nào là nullable
+    Nullable là khái niệm trong lập trình cho phép một biến có thể chứa giá trị null (rỗng/không có giá trị), giúp code an toàn và rõ ràng hơn về mặt ý nghĩa!
 
-A new Flutter project.
+# Khi nào nên không nên dùng 
+    Nên dùng nullable khi:
+    Giá trị tùy chọn (Optional)
+    Dữ liệu chưa được tải
+    Form validation
+    API response có thể thiếu
 
-## Getting Started
+    Không nên dùng nullable khi:
+    Giá trị luôn tồn tại
+    ID hoặc key quan trọng
+    Configuration cơ bản
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+# Cách thức xử lí null phổ biến như: ?, ?., ?:, let, !!
+    1. Null-aware operator (?.)
+    2. Null coalescing operator (??)
+    3. Null assertion (!)
+    4. Conditional access với if
+    5. Late keyword (khởi tạo sau)
+    6. Pattern matching với switch

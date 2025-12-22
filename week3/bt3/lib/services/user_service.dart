@@ -7,7 +7,7 @@ abstract class UserService extends BaseService<User, String> {
   bool returnBook(String userId, String bookId);
 }
 
-class UserServiceImpl with Singleton<UserServiceImpl> implements UserService {
+class UserServiceImpl implements UserService {
   static final UserServiceImpl _instance = UserServiceImpl._internal();
   factory UserServiceImpl() => _instance;
   UserServiceImpl._internal();
@@ -18,119 +18,66 @@ class UserServiceImpl with Singleton<UserServiceImpl> implements UserService {
       name: 'Nguyễn Văn A',
       email: 'nguyenvana@gmail.com',
       phone: '0123456789',
-      borrowedBookIds: ['2'], // Đang mượn sách Dart Programming
+      borrowedBookIds: ['2'],
     ),
     User(
       id: '2',
       name: 'Trần Thị B',
       email: 'tranthib@gmail.com',
       phone: '0987654321',
-      borrowedBookIds: [],
     ),
     User(
       id: '3',
       name: 'Lê Văn C',
       email: 'levanc@gmail.com',
       phone: '0555666777',
-      borrowedBookIds: [],
     ),
   ];
 
   @override
-  List<User> getAll() {
-    return List.from(_users);
-  }
+  List<User> getAll() => List.from(_users);
 
   @override
-  User? getById(String id) {
-    try {
-      return _users.firstWhere((user) => user.id == id);
-    } catch (e) {
-      return null;
-    }
-  }
+  User? getById(String id) => 
+      _users.cast<User?>().firstWhere((user) => user?.id == id, orElse: () => null);
 
   @override
-  void add(User user) {
-    _users.add(user);
-  }
+  void add(User user) => _users.add(user);
 
   @override
   void update(User user) {
     final index = _users.indexWhere((u) => u.id == user.id);
-    if (index != -1) {
-      _users[index] = user;
-    }
+    if (index != -1) _users[index] = user;
   }
 
   @override
-  void delete(String id) {
-    _users.removeWhere((user) => user.id == id);
-  }
+  void delete(String id) => _users.removeWhere((user) => user.id == id);
 
   @override
-  List<User> search(String query) {
-    return _users.where((user) => 
-      user.name.toLowerCase().contains(query.toLowerCase()) ||
-      user.email.toLowerCase().contains(query.toLowerCase())
-    ).toList();
-  }
+  List<User> search(String query) =>
+      query.isEmpty ? getAll() :
+      _users.where((user) => user.matchesSearchQuery(query)).toList();
+
   @override
   List<Book> getBorrowedBooksByUser(String userId, List<Book> allBooks) {
     final user = getById(userId);
-    if (user == null) return [];
-    
-    return allBooks.where((book) => 
-      user.borrowedBookIds.contains(book.id)
-    ).toList();
+    return user == null ? [] : 
+           allBooks.where((book) => user.borrowedBookIds.contains(book.id)).toList();
   }
+
   @override
   bool borrowBook(String userId, String bookId) {
     final user = getById(userId);
-    if (user == null || user.borrowedBookIds.contains(bookId)) {
-      return false;
-    }
-    
-    final updatedUser = user.addBorrowedBook(bookId);
-    update(updatedUser);
+    if (user?.borrowedBookIds.contains(bookId) ?? true) return false;
+    update(user!.addBorrowedBook(bookId));
     return true;
   }
 
   @override
   bool returnBook(String userId, String bookId) {
     final user = getById(userId);
-    if (user == null || !user.borrowedBookIds.contains(bookId)) {
-      return false;
-    }
-    
-    final updatedUser = user.removeBorrowedBook(bookId);
-    update(updatedUser);
+    if (!(user?.borrowedBookIds.contains(bookId) ?? false)) return false;
+    update(user!.removeBorrowedBook(bookId));
     return true;
-  }
-
-  // Implement missing BaseService methods
-  @override
-  int count() => _users.length;
-
-  @override
-  bool exists(String id) => _users.any((user) => user.id == id);
-
-  @override
-  void clear() => _users.clear();
-
-  // Event callbacks implementation
-  @override
-  void onItemAdded(User item) {
-    // Log or notify when user is added
-  }
-
-  @override
-  void onItemUpdated(User item) {
-    // Log or notify when user is updated
-  }
-
-  @override
-  void onItemDeleted(String id) {
-    // Log or notify when user is deleted
   }
 }

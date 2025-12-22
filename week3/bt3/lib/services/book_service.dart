@@ -3,11 +3,10 @@ import 'base_service.dart';
 
 abstract class BookService extends BaseService<Book, String> {
   List<Book> getAvailableBooks();
-  List<Book> getBorrowedBooks();
   bool updateBookStatus(String bookId, bool isAvailable);
 }
 
-class BookServiceImpl with Singleton<BookServiceImpl> implements BookService {
+class BookServiceImpl implements BookService {
   static final BookServiceImpl _instance = BookServiceImpl._internal();
   factory BookServiceImpl() => _instance;
   BookServiceImpl._internal();
@@ -43,95 +42,40 @@ class BookServiceImpl with Singleton<BookServiceImpl> implements BookService {
   ];
 
   @override
-  List<Book> getAll() {
-    return List.from(_books);
-  }
+  List<Book> getAll() => List.from(_books);
 
   @override
-  Book? getById(String id) {
-    try {
-      return _books.firstWhere((book) => book.id == id);
-    } catch (e) {
-      return null;
-    }
-  }
+  Book? getById(String id) => 
+      _books.cast<Book?>().firstWhere((book) => book?.id == id, orElse: () => null);
 
   @override
-  void add(Book book) {
-    if (!book.isValid()) {
-      throw ArgumentError('Invalid book data');
-    }
-    _books.add(book);
-    onItemAdded(book);
-  }
+  void add(Book book) => _books.add(book);
 
   @override
   void update(Book book) {
-    if (!book.isValid()) {
-      throw ArgumentError('Invalid book data');
-    }
     final index = _books.indexWhere((b) => b.id == book.id);
-    if (index != -1) {
-      _books[index] = book;
-      onItemUpdated(book);
-    }
+    if (index != -1) _books[index] = book;
   }
 
   @override
-  void delete(String id) {
-    _books.removeWhere((book) => book.id == id);
-    onItemDeleted(id);
-  }
+  void delete(String id) => _books.removeWhere((book) => book.id == id);
 
   @override
-  List<Book> search(String query) {
-    if (query.isEmpty) return getAll();
-    return _books.where((book) => book.matchesSearchQuery(query)).toList();
-  }
+  List<Book> search(String query) =>
+      query.isEmpty ? getAll() : 
+      _books.where((book) => book.matchesSearchQuery(query)).toList();
 
   @override
-  int count() => _books.length;
-
-  @override
-  bool exists(String id) => _books.any((book) => book.id == id);
-
-  @override
-  void clear() => _books.clear();
-
-  @override
-  List<Book> getAvailableBooks() {
-    return _books.where((book) => book.isAvailable).toList();
-  }
-
-  @override
-  List<Book> getBorrowedBooks() {
-    return _books.where((book) => !book.isAvailable).toList();
-  }
+  List<Book> getAvailableBooks() =>
+      _books.where((book) => book.isAvailable).toList();
 
   @override
   bool updateBookStatus(String bookId, bool isAvailable) {
     final book = getById(bookId);
     if (book != null) {
-      final updatedBook = book.copyWith(isAvailable: isAvailable);
-      update(updatedBook);
+      update(book.copyWith(isAvailable: isAvailable));
       return true;
     }
     return false;
-  }
-
-  // Event callbacks implementation
-  @override
-  void onItemAdded(Book item) {
-    // Log or notify when book is added
-  }
-
-  @override
-  void onItemUpdated(Book item) {
-    // Log or notify when book is updated
-  }
-
-  @override
-  void onItemDeleted(String id) {
-    // Log or notify when book is deleted
   }
 }

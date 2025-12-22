@@ -61,7 +61,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Scaffold(    
       backgroundColor: Colors.grey.shade50,
       body: Padding(
         padding: const EdgeInsets.all(20.0),

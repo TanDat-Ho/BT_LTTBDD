@@ -1,32 +1,41 @@
+/// App Constants Class - OOP: ENCAPSULATION
+/// 
+/// Đóng gói tất cả constants trong một class duy nhất
+/// - Static constants để access mà không cần instance
+/// - Centralized management - dễ maintain và update
+/// - Type-safe constants với proper naming convention
 class AppConstants {
-  // App Info
+  
+  /// App Information
   static const String appName = 'Hệ thống quản lý Thư viện';
   static const String appVersion = '1.0.0';
 
-  // Colors
+  /// Color Constants - Centralized color management
+  /// Sử dụng hex values cho consistent colors
   static const int primaryBlue = 0xFF1976D2;
   static const int primaryGreen = 0xFF4CAF50;
   static const int primaryOrange = 0xFFFF9800;
   static const int primaryRed = 0xFFF44336;
 
-  // Strings
+  /// Common UI Strings - Tái sử dụng across screens
   static const String searchHint = 'Tìm kiếm...';
   static const String noResultsFound = 'Không tìm thấy kết quả';
   static const String loading = 'Đang tải...';
   static const String error = 'Có lỗi xảy ra';
 
-  // Button Labels
+  /// Button Labels - Consistent button text
   static const String add = 'Thêm';
   static const String edit = 'Sửa';
   static const String delete = 'Xóa';
   static const String cancel = 'Hủy';
   static const String save = 'Lưu';
   static const String close = 'Đóng';
-  // Book Status
+  
+  /// Book Status Labels - Domain-specific constants
   static const String available = 'Có sẵn';
   static const String borrowed = 'Đã mượn';
 
-  // Screen Titles
+  /// Screen Titles - Navigation và AppBar titles
   static const String managementTitle = 'Tìm kiếm sách theo người dùng';
   static const String bookListTitle = 'Danh sách sách';
   static const String userListTitle = 'Danh sách người dùng';
